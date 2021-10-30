@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+		<title>World Map</title>
+		<style>
+			body {
+				padding: 10px;
+				font-family: "Open Sans", sans-serif;
+				margin: 0;
+			}
+			.map_outer {
+				/* background-color: orange; */
+				border: 1px solid black;
+				cursor: pointer;
+			}
+			.map_outer .map_inner {
+				position: relative;
+			}
+			.map_outer .map_inner img {
+				width: 100%;
+				/* width: 2543px;
+				height: 1099px; */
+				display: block;
+			}
+			.hint {
+				position: absolute;
+				display: block;
+				height: 16px;
+				width: 16px;
+				background-color: black;
+				border-radius: 50%;
+				left: 100px;
+				top: 100px;
+				opacity: 0;
+				pointer-events: none;
+			}
+			.hint.active {
+				opacity: 1;
+				transition: 0.4s all;
+				/* transform: translate(100px, 100px) rotate(30deg); */
+			}
+			.question {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 20px;
+				border-bottom: 1px solid black;
+			}
+			p {
+				margin: 0;
+			}
+			button {
+				background: violet;
+				border: none;
+				padding: 10px 30px;
+				color: white;
+				font-size: 20px;
+				border-radius: 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				opacity: 0.9;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="map_outer">
+			<div class="question">
+				<p id="question"></p>
+				<div class="btns">
+					<button id="prev">Prev</button>
+					<button id="next">Next</button>
+				</div>
+			</div>
+			<div id="worldMap" class="map_inner">
+				<img src="map.png" alt="World Map" />
+				<span id="hint" class="hint"></span>
+			</div>
+		</div>
+		<script>
+			var questionsData = [
+				{
+					imageUrl:
+						"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/World_map_with_four_colours.svg/2543px-World_map_with_four_colours.svg.png",
+					questionText: "Find Turkey on this map.",
+					imageHeight: 1099,
+					imageWidth: 2543,
+					answerOffsetX: 1370,
+					answerOffsetY: 305,
+					answerHeight: 46,
+					answerWidth: 118,
+				},
+				{
+					imageUrl:
+						"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/World_map_with_four_colours.svg/2543px-World_map_with_four_colours.svg.png",
+					questionText: "Find Lesotho on this map.",
+					imageHeight: 1099,
+					imageWidth: 2543,
+					answerOffsetX: 1377,
+					answerOffsetY: 865,
+					answerHeight: 20,
+					answerWidth: 20,
+				},
+				{
+					imageUrl:
+						"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/World_map_with_four_colours.svg/2543px-World_map_with_four_colours.svg.png",
+					questionText: "Find Iceland on this map.",
+					imageHeight: 1099,
+					imageWidth: 2543,
+					answerOffsetX: 1087,
+					answerOffsetY: 122,
+					answerHeight: 28,
+					answerWidth: 52,
+				},
+				{
+					imageUrl:
+						"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/World_map_with_four_colours.svg/2543px-World_map_with_four_colours.svg.png",
+					questionText: "Find Azerbaijan on this map.",
+					imageHeight: 1099,
+					imageWidth: 2543,
+					answerOffsetX: 1490,
+					answerOffsetY: 308,
+					answerHeight: 25,
+					answerWidth: 30,
+				},
+			];
+
+			// function angle(cx, cy, ex, ey) {
+			// 	var dy = ey - cy;
+			// 	var dx = ex - cx;
+			// 	var theta = Math.atan2(dy, dx); // range (-PI, PI]
+			// 	theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+			// 	//if (theta < 0) theta = 360 + theta; // range [0, 360)
+			// 	return theta;
+			// }
+
+			const init = () => {
+				const worldMap = document.querySelector("#worldMap img");
+				const hint = document.querySelector("#worldMap .hint");
+				const question = document.querySelector("#question");
+				const btns = document.querySelectorAll("button");
+				const H = worldMap.clientHeight;
+				const W = worldMap.clientWidth;
+				const wR = W / 2543;
+				let toBeFoundIndex = 0;
+
+				question.innerText = `Q.${toBeFoundIndex + 1} ` + questionsData[toBeFoundIndex].questionText;
+
+				/* Update the data as per image ratio */
+				/* ********************************* */
+				questionsData.forEach((data) => {
+					data.answerOffsetX *= wR;
+					data.answerOffsetY *= wR;
+					data.answerHeight *= wR;
+					data.answerWidth *= wR;
+				});
+
+				// console.log(H, W, wR, wR * 1099);
+
+				worldMap.addEventListener("click", (e) => {
+					const X = e.offsetX;
+					const Y = e.offsetY;
+					hint.style.left = X - 8 + "px";
+					hint.style.top = Y - 8 + "px";
+					hint.style.opacity = 1;
+					let foundIndex = -1;
+
+					let x1 = X;
+					let y1 = Y;
+					let x2 = questionsData[toBeFoundIndex].answerOffsetX + questionsData[toBeFoundIndex].answerWidth / 2;
+					let y2 = questionsData[toBeFoundIndex].answerOffsetY + questionsData[toBeFoundIndex].answerHeight / 2;
+
+					/* Find out the correct answer */
+					/* ********************************* */
+					for (let i = 0; i < questionsData.length; i++) {
+						const el = questionsData[i];
+						const x = el.answerOffsetX;
+						const y = el.answerOffsetY;
+						const w = el.answerWidth;
+						const h = el.answerHeight;
+
+						if (X > x && Y > y && X < x + w && Y < y + h) {
+							foundIndex = i;
+							break;
+						}
+					}
+
+					/* Show the correct answer or hint */
+					/* ********************************* */
+					if (foundIndex >= 0 && toBeFoundIndex === foundIndex) {
+						alert(questionsData[foundIndex].questionText);
+						hint.style.opacity = 0;
+						toBeFoundIndex++;
+
+						if (toBeFoundIndex === questionsData.length) {
+							// alert("You are Genius!");
+							toBeFoundIndex = 0;
+						}
+						question.innerText = `Q.${toBeFoundIndex + 1} ` + questionsData[toBeFoundIndex].questionText;
+					} else {
+						const D = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+						let d = 100;
+
+						if (D < d) {
+							d = D / 2;
+						}
+						const t = d / D;
+
+						const left = (1 - t) * x1 + t * x2;
+						const top = (1 - t) * y1 + t * y2;
+
+						setTimeout(() => {
+							hint.classList.add("active");
+							hint.style.left = left + "px";
+							hint.style.top = top + "px";
+						});
+						setTimeout(() => {
+							hint.classList.remove("active");
+							hint.style.opacity = 0;
+						}, 400);
+					}
+				});
+
+				btns.forEach((btn) => {
+					btn.addEventListener("click", (e) => {
+						let id = e.target.id;
+
+						if (id === "next") {
+							if (toBeFoundIndex === questionsData.length - 1) {
+								toBeFoundIndex = 0;
+							} else {
+								toBeFoundIndex++;
+							}
+						} else if (id === "prev") {
+							if (toBeFoundIndex === 0) {
+								toBeFoundIndex = questionsData.length - 1;
+							} else {
+								toBeFoundIndex--;
+							}
+						}
+						question.innerText = `Q.${toBeFoundIndex + 1} ` + questionsData[toBeFoundIndex].questionText;
+					});
+				});
+			};
+
+			window.addEventListener("load", () => {
+				init();
+			});
+		</script>
+	</body>
+</html>

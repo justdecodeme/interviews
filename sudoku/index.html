@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Sudoku</title>
+
+		<style>
+			ul {
+				padding: 0;
+				margin: 0;
+				display: inline-block;
+			}
+			li {
+				list-style: none;
+				width: 40px;
+				height: 40px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid black;
+				cursor: pointer;
+			}
+			li:hover {
+				opacity: 0.6;
+			}
+			.bb {
+				border-bottom: 3px solid black;
+			}
+			.br {
+				border-right: 3px solid black;
+			}
+			.blank span {
+				visibility: hidden;
+			}
+			span {
+				pointer-events: none;
+			}
+			.blank {
+				background-color: rgb(199, 199, 199);
+			}
+			.fill {
+				background-color: lightgreen;
+			}
+			#sudokuEl {
+				/* border: 1px solid black; */
+			}
+			.highlight {
+				background-color: #02b6ff;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Sudoku</h1>
+		<ul id="sudokuEl"></ul>
+
+		<script>
+			const sudokuEl = document.getElementById("sudokuEl");
+
+			let sudokuArr = [
+				[3, 4, 2, 0, 8, 0, 0, 0, 0],
+				[5, 0, 0, 9, 0, 0, 0, 2, 0],
+				[0, 9, 0, 0, 0, 4, 3, 8, 0],
+				[0, 2, 0, 3, 0, 5, 1, 0, 0],
+				[0, 5, 0, 7, 0, 6, 0, 4, 0],
+				[0, 7, 0, 0, 9, 1, 6, 5, 2],
+				[6, 0, 0, 0, 7, 9, 2, 3, 1],
+				[7, 0, 0, 0, 6, 0, 8, 0, 0],
+				[2, 0, 0, 5, 3, 0, 4, 0, 0],
+			];
+
+			for (let r = 0; r < 9; r++) {
+				let row = "<ul>";
+				for (let c = 0; c < 9; c++) {
+					let n = sudokuArr[r][c];
+					row += `<li id="${r}${c}" data-r="${r}" data-c="${c}" class="${n === 0 ? "blank" : "fill"} ${
+						r === 2 || r === 5 ? "bb" : ""
+					} ${c === 2 || c === 5 ? "br" : ""}"><span>${n}</span></li>`;
+				}
+				row += "</ul>";
+
+				sudokuEl.innerHTML += row;
+			}
+
+			sudokuEl.addEventListener("click", (e) => {
+				let _n = e.target.querySelector("span").innerHTML;
+				let _r = e.target.dataset.r;
+				let _c = e.target.dataset.c;
+				let box = null;
+
+				console.log(_r, _c, _n);
+
+				for (let r = 0; r < 9; r++) {
+					for (let c = 0; c < 9; c++) {
+						let n = sudokuArr[r][c];
+						let el = document.getElementById(`${r}${c}`);
+						if (_n == n && _n != 0) {
+							el.classList.add("highlight");
+						} else {
+							el.classList.remove("highlight");
+						}
+
+						if (_r == r) {
+							el.classList.add("highlight");
+						}
+						if (_c == c) {
+							el.classList.add("highlight");
+						}
+
+						if (_r < 3 && _c < 3) {
+							if (r < 3 && c < 3) {
+								el.classList.add("highlight");
+							}
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
