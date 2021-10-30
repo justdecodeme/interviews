@@ -6,39 +6,116 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Color Selection</title>
 		<style>
-			span {
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+			}
+			.text_input span {
 				position: relative;
 				padding-left: 20px;
 				display: inline-block;
+				cursor: pointer;
 			}
-			span:before {
+			.text_input span:hover {
+				opacity: 0.8;
+			}
+			.text_input span:before {
 				position: absolute;
 				content: "";
 				width: 14px;
 				height: 14px;
 				border: 1px solid rgb(125, 125, 125);
 				background-color: var(--color-code);
+				/* background-color: attr(data-color color); */
 				border-radius: 50%;
 				left: 0;
 				top: 50%;
 				transform: translateY(-50%);
 			}
+			.overlay {
+				position: fixed;
+				background: rgba(53, 53, 53, 0.548);
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				display: none;
+			}
+			.overlay.active {
+				display: block;
+			}
+			.popup {
+				position: fixed;
+				z-index: 2;
+				background: rgb(255, 255, 255);
+				border: 1px solid #9b0007;
+				border-radius: 6px;
+				width: 264px;
+				height: 400px;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				display: flex;
+				flex-direction: column;
+			}
+			.heading {
+				background-color: #9b0007;
+				padding: 15px;
+				color: white;
+				font-size: 20px;
+				margin: 0;
+				display: flex;
+				justify-content: space-between;
+				font-weight: normal;
+			}
+			.content {
+				padding: 15px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: space-between;
+				flex: 1;
+			}
+			.color_input {
+				width: 100%;
+				/* overflow: hidden;
+				visibility: hidden; */
+			}
+			.color_input input {
+				/* height: 2px; */
+			}
+			.popup_close,
+			.color_submit {
+				cursor: pointer;
+			}
+			.popup_close:hover,
+			.color_submit:hover {
+				opacity: 0.8;
+			}
 		</style>
 	</head>
 	<body>
-		<p id="contentEl">
-			This is not a valid value #abcdefg. This is not a valid value either #fff777s. However, this
-			is a perfectly valid colour #123456; value #ff0000; while this is not a valid colour value
-			#ffffff sdf
+		<p id="contentEl" class="text_input">
+			This is not a valid value #abcdefg. This is not a #123456; valid value either #fff777s.
+			However, this is a perfectly valid colour #123456; value #ff0000; while this is not #123456; a
+			valid colour value #FFFFFF sdf
 		</p>
+		<div id="overlay" class="overlay">
+			<div id="popup" class="popup">
+				<h1 class="heading">Choose Color<span class="popup_close" id="popupClose">x</span></h1>
+				<div class="content">
+					<div class="color_input"><input type="color" id="colorInput" /></div>
+					<button id="colorSubmit" class="color_submit">Choose Color</button>
+				</div>
+			</div>
+		</div>
 
 		<script>
-			// GET CONTENT OF ELEMENT
+			// GET STRING OF CONTENT ELEMENT
 			const contentEl = document.getElementById("contentEl");
+			let str = contentEl.innerText;
 
 			// GET ARRAY OF ALL VALID HEX VALUES FROM THE CONTENT
 			let rx = /#[a-fA-F0-9]{6}(;| )/g;
-			let str = contentEl.innerText;
 			let arr = str.match(rx);
 
 			// MAKING PLACEHOLDER FOR ALL THE COLORS TO REPLACE WITH CUSTOM TEXT LATER
@@ -52,10 +129,44 @@
 
 			// REPLACING PLACEHOLDERS WITH COLOR VALUES
 			arr.forEach((color, i) => {
-				str = str.replace(`{${i}}`, `<span style="--color-code: ${color}">${color}</span>`);
+				let colorValue = color.substring(0, color.length - 1);
+				str = str.replace(`{${i}}`, `<span style="--color-code: ${colorValue}">${color}</span>`);
 			});
 
 			contentEl.innerHTML = str;
+
+			const colorEls = document.querySelectorAll("span");
+			const colorInput = document.getElementById("colorInput");
+			const overlay = document.getElementById("overlay");
+			const popupClose = document.getElementById("popupClose");
+			const colorSubmit = document.getElementById("colorSubmit");
+			let clickedEl = null;
+			let lastChar = "";
+
+			colorEls.forEach((colorEl) => {
+				colorEl.addEventListener("click", (e) => {
+					clickedEl = e.target;
+					overlay.classList.add("active");
+					let colorValue = clickedEl.innerText;
+					lastChar = colorValue.substr(colorValue.length - 1) === ";" ? ";" : " ";
+					if (lastChar === ";") {
+						colorValue = colorValue.substring(0, colorValue.length - 1);
+					}
+					colorInput.value = colorValue;
+					colorInput.click();
+				});
+			});
+
+			overlay.addEventListener("click", (e) => {
+				if (e.target.id === "overlay") overlay.classList.remove("active");
+			});
+			popupClose.addEventListener("click", () => overlay.classList.remove("active"));
+			colorSubmit.addEventListener("click", () => {
+				let colorValue = colorInput.value;
+				clickedEl.innerHTML = colorValue + lastChar;
+				clickedEl.setAttribute("style", `--color-code: ${colorValue}`);
+				overlay.classList.remove("active");
+			});
 		</script>
 	</body>
 </html>
