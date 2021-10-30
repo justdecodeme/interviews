@@ -1,0 +1,15 @@
+1. Create a simple page with a Welcome Message and a slider(owl, flex,flickity whatever you want).
+2. With every slide move console the event by which its moved, (if navigation or dots clicked, log "click" in console, if its dragged by user log "Drag" in console. 
+2. When a user wants to leave the page show him a Pop Up(exit intent pop up).
+3. That pop up will have a gradient background and a close button. Check the below image for Reference, (this image is just for your idea, be creative.) 
+4. This is not a signup popup(it's an exit-intent popup), so use only 2 fields, Name, and Email with a checkbox for newsletters and a submit button.
+
+signup_form.png 
+
+On submitting this form:
+
+·  Show error if Email or checkbox value is blank(js or jQuery validation).
+·  Successful form submission: create a cookie (form_filled) & auto close the popup.
+·  On Closing the popup(by clicking the close button, whether the form is filled or not) a cookie (popUp_closed) will be created. 
+·  On refresh: if any of the above-created cookies(i.e. successful submission or close) are present, then an exit-intent popup should not appear.
+·  show a button on the main welcome screen now(if the cookie is present), which will delete the cookie, and exit intent popup will show again.

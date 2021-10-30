@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Slider with Cookies</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;500;800&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="wrapper">
+			<h2>Welcome to</h2>
+			<h1>Grazitti Interactive</h1>
+			<div class="owl-carousel owl-theme">
+				<div class="item">
+					<img src="img_1.jpg" alt="Slider Image" />
+				</div>
+				<div class="item">
+					<img src="img_2.jpg" alt="Slider Image" />
+				</div>
+				<div class="item">
+					<img src="img_3.jpg" alt="Slider Image" />
+				</div>
+				<div class="item">
+					<img src="img_4.jpg" alt="Slider Image" />
+				</div>
+				<div class="item">
+					<img src="img_5.jpg" alt="Slider Image" />
+				</div>
+				<div class="item">
+					<img src="img_6.jpg" alt="Slider Image" />
+				</div>
+			</div>
+		</div>
+
+		<div class="popup">
+			<form>
+				<label for="name">Name:</label>
+				<input class="name" id="name" type="text" placeholder="Name" />
+				<p class="name_error"></p>
+
+				<!-- intentionally using 'type="text"' instead of 'type="email"' to show error handeling -->
+				<label for="email">Email:</label>
+				<input class="email" id="email" type="text" placeholder="Email" />
+				<p class="email_error"></p>
+
+				<input class="checkbox" type="checkbox" id="newsletterAccept" />
+				<label for="newsletterAccept">Accept Newsletter</label>
+				<p class="checkbox_error"></p>
+
+				<button type="submit">Submit</button>
+				<button class="close_btn">X</button>
+			</form>
+		</div>
+
+		<button class="reset_btn">Reset</button>
+
+		<p class="credit">
+			Created By:
+			<a href="http://justdecode.me/"> Rakesh Kumar</a>
+		</p>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
