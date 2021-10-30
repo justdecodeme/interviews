@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Color Selection</title>
+		<style>
+			span {
+				position: relative;
+				padding-left: 20px;
+				display: inline-block;
+			}
+			span:before {
+				position: absolute;
+				content: "";
+				width: 14px;
+				height: 14px;
+				border: 1px solid rgb(125, 125, 125);
+				background-color: var(--color-code);
+				border-radius: 50%;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+		</style>
+	</head>
+	<body>
+		<p id="contentEl">
+			This is not a valid value #abcdefg. This is not a valid value either #fff777s. However, this
+			is a perfectly valid colour #123456; value #ff0000; while this is not a valid colour value
+			#ffffff sdf
+		</p>
+
+		<script>
+			// GET CONTENT OF ELEMENT
+			const contentEl = document.getElementById("contentEl");
+
+			// GET ARRAY OF ALL VALID HEX VALUES FROM THE CONTENT
+			let rx = /#[a-fA-F0-9]{6}(;| )/g;
+			let str = contentEl.innerText;
+			let arr = str.match(rx);
+
+			// MAKING PLACEHOLDER FOR ALL THE COLORS TO REPLACE WITH CUSTOM TEXT LATER
+			arr.forEach((color, i) => {
+				let space = "";
+				if (/\s+$/.test(color)) {
+					space = " ";
+				}
+				str = str.replace(arr[i], `{${i}}${space}`);
+			});
+
+			// REPLACING PLACEHOLDERS WITH COLOR VALUES
+			arr.forEach((color, i) => {
+				str = str.replace(`{${i}}`, `<span style="--color-code: ${color}">${color}</span>`);
+			});
+
+			contentEl.innerHTML = str;
+		</script>
+	</body>
+</html>
