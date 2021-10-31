@@ -9,6 +9,9 @@
 			body {
 				font-family: Arial, Helvetica, sans-serif;
 			}
+			.text_input {
+				line-height: 1.5;
+			}
 			.text_input span {
 				position: relative;
 				padding-left: 20px;
@@ -77,11 +80,6 @@
 			}
 			.color_input {
 				width: 100%;
-				/* overflow: hidden;
-				visibility: hidden; */
-			}
-			.color_input input {
-				/* height: 2px; */
 			}
 			.popup_close,
 			.color_submit {
@@ -95,9 +93,9 @@
 	</head>
 	<body>
 		<p id="contentEl" class="text_input">
-			This is not a valid value #abcdefg. This is not a #123456; valid value either #fff777s.
-			However, this is a perfectly valid colour #123456; value #ff0000; while this is not #123456; a
-			valid colour value #FFFFFF sdf
+			This is not a valid value #abcdefg. This is not a valid value either #fff777s. However, this
+			is a perfectly valid colour #123456; value #ff0000; while this is not #123456; a valid colour
+			value #FFFFFF I enjoyed working on this task, and my fav color is #a600ff , what is yours?
 		</p>
 		<div id="overlay" class="overlay">
 			<div id="popup" class="popup">
@@ -135,6 +133,7 @@
 
 			contentEl.innerHTML = str;
 
+			// VARIABLES
 			const colorEls = document.querySelectorAll("span");
 			const colorInput = document.getElementById("colorInput");
 			const overlay = document.getElementById("overlay");
@@ -143,6 +142,7 @@
 			let clickedEl = null;
 			let lastChar = "";
 
+			// CLICK EVENTS ON VALID COLOR VALUES
 			colorEls.forEach((colorEl) => {
 				colorEl.addEventListener("click", (e) => {
 					clickedEl = e.target;
@@ -157,10 +157,13 @@
 				});
 			});
 
+			// REMOVE OVERLAY > POPUP
 			overlay.addEventListener("click", (e) => {
 				if (e.target.id === "overlay") overlay.classList.remove("active");
 			});
 			popupClose.addEventListener("click", () => overlay.classList.remove("active"));
+
+			// UPDATE COLOR WHEN CLICKED ON SUBMIT BUTTON
 			colorSubmit.addEventListener("click", () => {
 				let colorValue = colorInput.value;
 				clickedEl.innerHTML = colorValue + lastChar;
